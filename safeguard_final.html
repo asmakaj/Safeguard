@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SafeGuard AI — Protection chantier autoroutier</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --navy:#0a1628;
+  --blue:#1a4fc4;
+  --sky:#2d9de8;
+  --cyan:#00c8e8;
+  --ice:#e6f4fd;
+  --orange:#e8620a;
+  --green:#18a84a;
+  --red:#d42a2a;
+  --yellow:#f5b800;
+  --text:#0f1e2e;
+  --mid:#4a5e72;
+  --light:#8a9db0;
+  --border:#d0dde8;
+  --bg:#f2f7fc;
+  --white:#fff;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'Barlow',sans-serif;color:var(--text);background:var(--white);overflow-x:hidden;}
+
+/* ═══ NAV ═══ */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(10,22,40,0.95);backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.08);
+  padding:0 40px;height:56px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-logo{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;color:white;letter-spacing:2px;}
+.nav-logo span{color:var(--cyan);}
+.nav-links{display:flex;gap:30px;align-items:center;}
+.nav-links a{color:rgba(255,255,255,0.6);font-size:13px;font-weight:500;text-decoration:none;letter-spacing:0.5px;transition:color .2s;}
+.nav-links a:hover{color:var(--cyan);}
+.nav-cta{background:var(--blue);color:white;padding:7px 18px;font-size:13px;font-weight:700;letter-spacing:1px;border:none;cursor:pointer;font-family:'Barlow Condensed',sans-serif;transition:background .2s;}
+.nav-cta:hover{background:var(--sky);}
+
+/* ═══ HERO ═══ */
+.hero{
+  min-height:100vh;
+  background:linear-gradient(135deg,var(--navy) 0%,#0d2244 40%,#0a1e3a 100%);
+  display:flex;align-items:center;justify-content:center;
+  text-align:center;padding:80px 40px 60px;
+  position:relative;overflow:hidden;
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,200,232,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,232,0.05) 1px,transparent 1px);
+  background-size:40px 40px;
+}
+.hero-glow{
+  position:absolute;top:20%;left:50%;transform:translateX(-50%);
+  width:600px;height:300px;
+  background:radial-gradient(ellipse,rgba(45,157,232,0.2) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-content{position:relative;z-index:1;max-width:800px;}
+.hero-tag{
+  display:inline-block;background:rgba(0,200,232,0.12);border:1px solid rgba(0,200,232,0.3);
+  color:var(--cyan);font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:3px;padding:5px 16px;margin-bottom:24px;text-transform:uppercase;
+}
+.hero h1{
+  font-family:'Barlow Condensed',sans-serif;font-size:clamp(48px,7vw,80px);font-weight:900;
+  color:white;line-height:1;letter-spacing:-1px;margin-bottom:12px;text-transform:uppercase;
+}
+.hero h1 em{color:var(--cyan);font-style:normal;display:block;}
+.hero-sub{font-size:17px;color:rgba(255,255,255,0.55);line-height:1.6;max-width:560px;margin:0 auto 36px;}
+.hero-kpis{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-bottom:40px;}
+.kpi{text-align:center;}
+.kpi-v{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:900;color:var(--cyan);display:block;line-height:1;}
+.kpi-l{font-size:11px;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:1.5px;margin-top:2px;}
+.kpi-sep{width:1px;background:rgba(255,255,255,0.1);align-self:stretch;}
+.hero-btns{display:flex;gap:14px;justify-content:center;}
+.btn-primary{
+  background:var(--blue);color:white;padding:14px 32px;
+  font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;
+  border:none;cursor:pointer;text-transform:uppercase;transition:all .2s;text-decoration:none;display:inline-block;
+}
+.btn-primary:hover{background:var(--sky);transform:translateY(-1px);}
+.btn-ghost{
+  background:transparent;color:white;padding:14px 32px;
+  font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;
+  border:1px solid rgba(255,255,255,0.25);cursor:pointer;text-transform:uppercase;transition:all .2s;text-decoration:none;display:inline-block;
+}
+.btn-ghost:hover{border-color:var(--cyan);color:var(--cyan);}
+
+/* ═══ SCROLL INDICATOR ═══ */
+.scroll-ind{
+  position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  color:rgba(255,255,255,0.3);font-size:11px;letter-spacing:2px;
+}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,rgba(0,200,232,0.6),transparent);animation:scrollPulse 2s infinite;}
+@keyframes scrollPulse{0%,100%{opacity:.3;}50%{opacity:1;}}
+
+/* ═══ SECTIONS COMMUNES ═══ */
+section{padding:80px 40px;}
+.section-label{
+  font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:4px;text-transform:uppercase;color:var(--sky);margin-bottom:10px;
+}
+.section-title{
+  font-family:'Barlow Condensed',sans-serif;font-size:clamp(32px,4vw,48px);font-weight:900;
+  color:var(--navy);line-height:1.1;margin-bottom:16px;text-transform:uppercase;
+}
+.section-desc{font-size:16px;color:var(--mid);line-height:1.6;max-width:560px;}
+.max{max-width:1100px;margin:0 auto;}
+
+/* ═══ HOW IT WORKS ═══ */
+#how{background:var(--bg);}
+.how-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:48px;border:1px solid var(--border);}
+.how-card{
+  padding:32px 24px;border-right:1px solid var(--border);
+  position:relative;background:white;transition:background .2s;
+}
+.how-card:last-child{border-right:none;}
+.how-card:hover{background:var(--ice);}
+.how-num{
+  font-family:'Barlow Condensed',sans-serif;font-size:56px;font-weight:900;
+  color:rgba(26,79,196,0.08);line-height:1;margin-bottom:12px;
+}
+.how-icon{width:40px;height:40px;margin-bottom:14px;}
+.how-title{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--navy);margin-bottom:8px;letter-spacing:0.5px;}
+.how-text{font-size:13px;color:var(--mid);line-height:1.6;}
+.how-arrow{
+  position:absolute;right:-16px;top:50%;transform:translateY(-50%);
+  width:32px;height:32px;background:var(--blue);display:flex;align-items:center;justify-content:center;
+  color:white;font-size:14px;z-index:2;
+}
+.how-card:last-child .how-arrow{display:none;}
+
+/* ═══ DEMO SECTION ═══ */
+#demo{background:var(--navy);padding:80px 40px;}
+#demo .section-title{color:white;}
+#demo .section-desc{color:rgba(255,255,255,0.5);}
+#demo .section-label{color:var(--cyan);}
+
+.demo-container{
+  margin-top:48px;display:grid;grid-template-columns:1fr 380px;gap:32px;align-items:start;
+}
+
+/* Chantier map */
+.site-map{
+  background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);
+  border-radius:4px;padding:24px;position:relative;
+  min-height:460px;
+}
+.site-map-title{
+  font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;
+  letter-spacing:3px;color:var(--cyan);margin-bottom:20px;text-transform:uppercase;
+}
+.road{
+  background:linear-gradient(180deg,#1a2a3a,#1e3050);
+  border-radius:3px;padding:16px;position:relative;
+  border:1px solid rgba(255,255,255,0.06);
+  min-height:340px;
+}
+/* Road markings */
+.road::before{
+  content:'';position:absolute;left:50%;top:0;bottom:0;width:2px;
+  background:repeating-linear-gradient(to bottom,rgba(255,200,0,0.4) 0,rgba(255,200,0,0.4) 20px,transparent 20px,transparent 40px);
+  transform:translateX(-50%);
+}
+.road-label{
+  font-family:'Barlow Condensed',sans-serif;font-size:10px;letter-spacing:2px;
+  color:rgba(255,255,255,0.2);position:absolute;top:8px;left:50%;transform:translateX(-50%);
+  white-space:nowrap;
+}
+
+/* Characters */
+.character{
+  position:absolute;cursor:pointer;transition:all .3s;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+}
+.char-avatar{
+  width:48px;height:48px;border-radius:50%;
+  border:2px solid rgba(255,255,255,0.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;background:rgba(255,255,255,0.06);
+  transition:all .3s;position:relative;
+}
+.char-label{
+  font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;
+  color:rgba(255,255,255,0.6);letter-spacing:1px;text-align:center;white-space:nowrap;
+}
+.char-status{
+  width:10px;height:10px;border-radius:50%;background:var(--green);
+  position:absolute;bottom:1px;right:1px;border:1px solid #0a1628;
+}
+
+/* Alert rings */
+.alert-ring{
+  position:absolute;inset:-6px;border-radius:50%;
+  border:2px solid transparent;
+  animation:none;
+}
+.character.danger .char-avatar{border-color:var(--red);}
+.character.danger .char-status{background:var(--red);}
+.character.danger .alert-ring{
+  border-color:var(--red);
+  animation:ringPulse 0.8s infinite;
+}
+.character.warning .char-avatar{border-color:var(--orange);}
+.character.warning .char-status{background:var(--orange);}
+.character.warning .alert-ring{
+  border-color:var(--orange);
+  animation:ringPulse 1.2s infinite;
+}
+@keyframes ringPulse{
+  0%{transform:scale(1);opacity:1;}
+  100%{transform:scale(2);opacity:0;}
+}
+
+/* Engin */
+.engin{
+  position:absolute;width:80px;height:44px;
+  background:linear-gradient(135deg,#3a4a5a,#2a3848);
+  border:1px solid rgba(255,255,255,0.15);border-radius:3px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;transition:all .4s;cursor:default;
+}
+.engin-label{
+  position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);
+  font-family:'Barlow Condensed',sans-serif;font-size:9px;color:rgba(255,255,255,0.4);
+  white-space:nowrap;letter-spacing:1px;
+}
+.engin.moving{animation:enginMove 3s ease-in-out infinite;}
+@keyframes enginMove{0%,100%{transform:translateX(0);}50%{transform:translateX(20px);}}
+
+/* UWB beam */
+.uwb-beam{
+  position:absolute;pointer-events:none;opacity:0;transition:opacity .5s;
+  border:1px dashed rgba(232,98,10,0.4);border-radius:50%;
+  animation:beamPulse 1.5s infinite;
+}
+.uwb-beam.active{opacity:1;}
+@keyframes beamPulse{
+  0%{transform:scale(0.8);opacity:0.8;}
+  100%{transform:scale(1.4);opacity:0;}
+}
+
+/* ═══ SIDEBAR ALERTS ═══ */
+.demo-sidebar{display:flex;flex-direction:column;gap:16px;}
+
+/* Phone mock */
+.phone-mock{
+  background:#111;border-radius:36px;border:6px solid #222;
+  padding:20px 0;overflow:hidden;position:relative;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+.phone-notch{
+  width:100px;height:24px;background:#111;border-radius:0 0 16px 16px;
+  margin:0 auto 12px;position:relative;
+}
+.phone-notch::after{
+  content:'';position:absolute;top:6px;left:50%;transform:translateX(-50%);
+  width:40px;height:5px;background:#222;border-radius:10px;
+}
+.phone-screen{padding:0 14px;}
+.phone-time{
+  font-family:'Barlow Condensed',sans-serif;font-size:32px;font-weight:300;
+  color:white;text-align:center;margin-bottom:4px;
+}
+.phone-date{font-size:12px;color:rgba(255,255,255,0.5);text-align:center;margin-bottom:16px;}
+
+/* Notifications */
+.notif{
+  background:rgba(255,255,255,0.1);backdrop-filter:blur(10px);
+  border-radius:14px;padding:12px 14px;margin-bottom:8px;
+  display:flex;gap:10px;align-items:flex-start;
+  transform:translateY(30px);opacity:0;
+  transition:all 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+.notif.show{transform:translateY(0);opacity:1;}
+.notif.danger-notif{background:rgba(212,42,42,0.25);border:1px solid rgba(212,42,42,0.3);}
+.notif.warning-notif{background:rgba(232,98,10,0.2);border:1px solid rgba(232,98,10,0.3);}
+.notif.ok-notif{background:rgba(24,168,74,0.2);border:1px solid rgba(24,168,74,0.3);}
+.notif-icon{font-size:24px;flex-shrink:0;margin-top:1px;}
+.notif-app{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;color:rgba(255,255,255,0.5);text-transform:uppercase;}
+.notif-title{font-size:13px;font-weight:600;color:white;line-height:1.2;margin-top:1px;}
+.notif-body{font-size:11px;color:rgba(255,255,255,0.65);margin-top:2px;line-height:1.4;}
+.notif-time{font-size:10px;color:rgba(255,255,255,0.3);margin-top:4px;}
+
+/* Controls */
+.demo-controls{
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+  padding:20px;border-radius:4px;
+}
+.demo-controls-title{
+  font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:3px;color:var(--cyan);margin-bottom:16px;text-transform:uppercase;
+}
+.scenario-btns{display:flex;flex-direction:column;gap:8px;}
+.scenario-btn{
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  color:white;padding:10px 14px;font-family:'Barlow Condensed',sans-serif;
+  font-size:13px;font-weight:600;letter-spacing:1px;cursor:pointer;
+  text-align:left;transition:all .2s;display:flex;align-items:center;gap:10px;
+}
+.scenario-btn:hover{background:rgba(26,79,196,0.3);border-color:var(--blue);}
+.scenario-btn.active{background:rgba(26,79,196,0.4);border-color:var(--cyan);}
+.scenario-dot{width:8px;height:8px;border-radius:50%;background:var(--light);flex-shrink:0;}
+.scenario-btn.active .scenario-dot{background:var(--cyan);}
+
+/* Characters panel */
+.chars-panel{
+  background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);
+  padding:16px;border-radius:4px;
+}
+.chars-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px;}
+.char-card{
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06);
+  padding:10px 12px;border-radius:3px;transition:all .3s;
+}
+.char-card.alert{border-color:var(--red);background:rgba(212,42,42,0.1);}
+.char-card.warn{border-color:var(--orange);background:rgba(232,98,10,0.1);}
+.char-card.ok{border-color:var(--green);background:rgba(24,168,74,0.08);}
+.char-card-name{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:white;display:flex;align-items:center;gap:6px;}
+.char-card-role{font-size:10px;color:rgba(255,255,255,0.4);margin-top:2px;letter-spacing:0.5px;}
+.status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0;transition:background .3s;}
+.char-card.alert .status-dot{background:var(--red);}
+.char-card.warn .status-dot{background:var(--orange);}
+
+/* Timeline */
+.timeline{
+  background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);
+  padding:16px;border-radius:4px;
+}
+.timeline-title{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;color:var(--cyan);margin-bottom:12px;text-transform:uppercase;}
+.tl-item{
+  display:flex;align-items:flex-start;gap:10px;padding:6px 0;
+  border-bottom:1px solid rgba(255,255,255,0.04);opacity:0.3;transition:opacity .3s;
+}
+.tl-item.active{opacity:1;}
+.tl-item:last-child{border:none;}
+.tl-time{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;color:var(--cyan);width:50px;flex-shrink:0;padding-top:1px;}
+.tl-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;margin-top:4px;}
+.tl-text{font-size:11px;color:rgba(255,255,255,0.6);line-height:1.4;}
+
+/* ═══ FEATURES ═══ */
+#features{background:white;}
+.features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin-top:48px;}
+.feat{background:white;padding:32px;transition:background .2s;}
+.feat:hover{background:var(--ice);}
+.feat-icon{font-size:32px;margin-bottom:16px;}
+.feat-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:700;color:var(--navy);margin-bottom:8px;letter-spacing:0.3px;}
+.feat-text{font-size:13px;color:var(--mid);line-height:1.6;}
+.feat-tag{display:inline-block;margin-top:12px;background:var(--ice);color:var(--blue);font-size:11px;font-weight:700;padding:3px 10px;letter-spacing:0.5px;}
+
+/* ═══ QR SECTION ═══ */
+#qr{background:var(--navy);text-align:center;padding:60px 40px;}
+#qr .section-title{color:white;}
+#qr .section-desc{color:rgba(255,255,255,0.5);margin:0 auto;}
+.qr-box{
+  display:inline-block;background:white;padding:24px;margin:32px auto 0;
+  border:3px solid var(--cyan);position:relative;
+}
+.qr-corners::before,.qr-corners::after{
+  content:'';position:absolute;width:20px;height:20px;
+}
+canvas#qrCanvas{display:block;}
+.qr-label{
+  font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;
+  color:var(--cyan);letter-spacing:2px;margin-top:16px;text-transform:uppercase;
+}
+.qr-url{font-size:12px;color:rgba(255,255,255,0.35);margin-top:4px;}
+
+/* ═══ FOOTER ═══ */
+footer{
+  background:#060f1e;padding:30px 40px;
+  display:flex;justify-content:space-between;align-items:center;
+  border-top:1px solid rgba(255,255,255,0.05);
+}
+.footer-brand{font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:900;color:white;letter-spacing:2px;}
+.footer-brand span{color:var(--cyan);}
+.footer-right{font-size:12px;color:rgba(255,255,255,0.3);}
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+.fade-up{animation:fadeUp .6s ease both;}
+.delay-1{animation-delay:.1s;}
+.delay-2{animation-delay:.2s;}
+.delay-3{animation-delay:.3s;}
+
+/* ═══ VISION 3D BADGE ═══ */
+.badge-3d{
+  display:inline-flex;align-items:center;gap:6px;
+  background:linear-gradient(135deg,rgba(0,200,232,0.15),rgba(26,79,196,0.2));
+  border:1px solid rgba(0,200,232,0.4);
+  color:var(--cyan);padding:5px 12px;
+  font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;cursor:pointer;
+  transition:all .2s;border-radius:2px;margin-top:10px;width:100%;
+  justify-content:center;
+}
+.badge-3d:hover{background:linear-gradient(135deg,rgba(0,200,232,0.3),rgba(26,79,196,0.35));border-color:var(--cyan);transform:translateY(-1px);box-shadow:0 4px 16px rgba(0,200,232,0.2);}
+.badge-3d svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;}
+
+/* ═══ VIDEO MODAL ═══ */
+.modal-overlay{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(5,10,20,0.92);backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal-box{
+  background:#0a1628;border:1px solid rgba(0,200,232,0.3);
+  border-radius:6px;overflow:hidden;max-width:800px;width:90%;
+  transform:scale(0.92);transition:transform .3s;
+  box-shadow:0 30px 80px rgba(0,0,0,0.7),0 0 60px rgba(0,200,232,0.1);
+}
+.modal-overlay.open .modal-box{transform:scale(1);}
+.modal-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 20px;border-bottom:1px solid rgba(255,255,255,0.07);
+}
+.modal-title{font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:var(--cyan);letter-spacing:2px;text-transform:uppercase;}
+.modal-close{
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
+  color:rgba(255,255,255,0.6);width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  font-size:16px;transition:all .2s;
+}
+.modal-close:hover{background:rgba(212,42,42,0.3);border-color:var(--red);color:white;}
+.modal-video-wrap{position:relative;background:#000;}
+.modal-video-wrap video{width:100%;display:block;max-height:70vh;object-fit:contain;}
+.modal-footer{
+  padding:12px 20px;display:flex;align-items:center;gap:10px;
+  font-family:'Barlow Condensed',sans-serif;font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:1px;
+}
+.modal-footer-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan);animation:blinkDot 1.5s infinite;}
+@keyframes blinkDot{0%,100%{opacity:1;}50%{opacity:0.2;}}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">SAFE<span>GUARD</span> AI</div>
+  <div class="nav-links">
+    <a href="#how">Fonctionnement</a>
+    <a href="#demo">Démonstration</a>
+    <a href="#features">Technologies</a>
+    <a href="#rapport">Rapport</a>
+    <a href="#qr">Accès rapide</a>
+    <button class="nav-cta" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">LANCER LA DÉMO</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content fade-up">
+    <div class="hero-tag">Chantier autoroutier de nuit · Sécurité IA</div>
+    <h1>Protéger vos ouvriers<em>même dans l'obscurité</em></h1>
+    <p class="hero-sub">Système autonome embarqué qui détecte les collisions en temps réel et alerte instantanément — même sous la pluie, la nuit, ou lorsque le ouvrier est caché derrière un engin.</p>
+    <div class="hero-kpis">
+      <div class="kpi"><span class="kpi-v">&lt;200ms</span><span class="kpi-l">Temps d'alerte</span></div>
+      <div class="kpi-sep"></div>
+      <div class="kpi"><span class="kpi-v">360°</span><span class="kpi-l">Couverture LiDAR</span></div>
+      <div class="kpi-sep"></div>
+      <div class="kpi"><span class="kpi-v">±10cm</span><span class="kpi-l">Précision UWB</span></div>
+      <div class="kpi-sep"></div>
+      <div class="kpi"><span class="kpi-v">20min</span><span class="kpi-l">Installation</span></div>
+    </div>
+    <div class="hero-btns">
+      <a href="#demo" class="btn-primary">VOIR LA DÉMO EN DIRECT</a>
+      <a href="#features" class="btn-ghost">TECHNOLOGIES</a>
+    </div>
+  </div>
+  <div class="scroll-ind">
+    <span>DÉFILER</span>
+    <div class="scroll-line"></div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="max">
+    <div class="section-label">Comment ça marche</div>
+    <div class="section-title">4 étapes, &lt;200ms</div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-num">01</div>
+        <svg class="how-icon" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="16" stroke="#1a4fc4" stroke-width="1.5"/><circle cx="20" cy="20" r="5" fill="#e6f4fd" stroke="#1a4fc4" stroke-width="1"/><circle cx="20" cy="20" r="2" fill="#1a4fc4"/><line x1="20" y1="4" x2="20" y2="10" stroke="#1a4fc4" stroke-width="2"/><line x1="20" y1="30" x2="20" y2="36" stroke="#1a4fc4" stroke-width="2"/><line x1="4" y1="20" x2="10" y2="20" stroke="#1a4fc4" stroke-width="2"/><line x1="30" y1="20" x2="36" y2="20" stroke="#1a4fc4" stroke-width="2"/><path d="M20 20 L20 4 A16 16 0 0 1 33.9 28 Z" fill="rgba(26,79,196,0.12)"/></svg>
+        <div class="how-title">Détection</div>
+        <div class="how-text">LiDAR 360° + Radar cartographient le chantier en temps réel. Le bracelet UWB localise chaque ouvrier à ±10 cm, même derrière un engin.</div>
+        <div class="how-arrow">›</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">02</div>
+        <svg class="how-icon" viewBox="0 0 40 40" fill="none"><rect x="8" y="8" width="24" height="18" rx="3" stroke="#1a4fc4" stroke-width="1.5"/><rect x="12" y="12" width="16" height="10" rx="1" fill="#e6f4fd" stroke="#1a4fc4" stroke-width="1"/><text x="20" y="20" text-anchor="middle" font-family="Barlow Condensed" font-size="8" fill="#1a4fc4" font-weight="700">AI</text><line x1="20" y1="26" x2="20" y2="32" stroke="#1a4fc4" stroke-width="1.5"/><line x1="14" y1="32" x2="26" y2="32" stroke="#1a4fc4" stroke-width="1.5"/></svg>
+        <div class="how-title">Analyse IA</div>
+        <div class="how-text">Le Jetson Orin Nano fusionne toutes les données en local. Calcul de trajectoire et Time To Collision en 100ms. Aucun cloud requis.</div>
+        <div class="how-arrow">›</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">03</div>
+        <svg class="how-icon" viewBox="0 0 40 40" fill="none"><path d="M20 8 L25 18 L20 16 L15 18 Z" fill="#e8620a" stroke="#e8620a" stroke-width="1"/><rect x="8" y="20" width="24" height="14" rx="2" stroke="#e8620a" stroke-width="1.5" fill="rgba(232,98,10,0.1)"/><line x1="14" y1="26" x2="26" y2="26" stroke="#e8620a" stroke-width="1.5"/><line x1="14" y1="29" x2="22" y2="29" stroke="#e8620a" stroke-width="1.5"/></svg>
+        <div class="how-title">Alerte</div>
+        <div class="how-text">Le bracelet vibre fortement + pictogramme directionnel OLED + LED couleur. La tablette chef de chantier reçoit l'alerte simultanément.</div>
+        <div class="how-arrow">›</div>
+      </div>
+      <div class="how-card">
+        <div class="how-num">04</div>
+        <svg class="how-icon" viewBox="0 0 40 40" fill="none"><rect x="6" y="10" width="28" height="22" rx="3" stroke="#18a84a" stroke-width="1.5" fill="rgba(24,168,74,0.08)"/><polyline points="12,22 16,18 20,24 24,16 28,20" stroke="#18a84a" stroke-width="1.5" fill="none"/><circle cx="12" cy="22" r="1.5" fill="#18a84a"/></svg>
+        <div class="how-title">Rapport</div>
+        <div class="how-text">En fin de nuit, un rapport automatique est envoyé <strong>uniquement au chef de chantier</strong> : alertes déclenchées, incidents photographiés, données fréquence cardiaque des ouvriers.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO LIVE -->
+<section id="demo">
+  <div class="max">
+    <div class="section-label">Simulation en direct</div>
+    <div class="section-title">CHANTIER AUTOROUTIER — SCÉNARIOS RÉELS</div>
+    <p class="section-desc">Sélectionnez un scénario pour simuler une situation dangereuse et voir le système réagir en temps réel.</p>
+
+    <div class="demo-container">
+
+      <!-- CHANTIER -->
+      <div>
+        <!-- Characters status -->
+        <div class="chars-panel" style="margin-bottom:16px;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;color:var(--cyan);margin-bottom:0;text-transform:uppercase;">ÉQUIPE CHANTIER</div>
+          <div class="chars-grid" id="charsGrid">
+            <div class="char-card ok" id="card-chef"><div class="char-card-name"><div class="status-dot"></div>CHEF CHANTIER</div><div class="char-card-role">Supervision · Tablette</div></div>
+            <div class="char-card ok" id="card-tech"><div class="char-card-name"><div class="status-dot"></div>OUVRIER</div><div class="char-card-role">Zone travaux · Bracelet</div></div>
+            <div class="char-card ok" id="card-cond"><div class="char-card-name"><div class="status-dot"></div>CONDUCTEUR</div><div class="char-card-role">Pelleteuse · Boîtier IA</div></div>
+            <div class="char-card ok" id="card-obs"><div class="char-card-name"><div class="status-dot"></div>OBSERVATEUR</div><div class="char-card-role">Périmètre · Bracelet</div></div>
+          </div>
+        </div>
+
+        <div class="site-map">
+          <div class="site-map-title">// VUE CHANTIER TEMPS RÉEL — BOÎTIER SGA-X1</div>
+          <div class="road" id="roadMap">
+            <div class="road-label">AUTOROUTE A1 — ZONE CHANTIER 300m</div>
+
+            <!-- Engin -->
+            <div class="engin" id="engin" style="left:120px;top:140px;">
+              🚜
+              <div class="engin-label">PELLETEUSE</div>
+            </div>
+
+            <!-- Characters on map -->
+            <div class="character" id="char-chef" style="left:60px;top:30px;" title="Chef de chantier">
+              <div class="char-avatar">👷<div class="char-status"></div><div class="alert-ring"></div></div>
+              <div class="char-label">CHEF</div>
+            </div>
+            <div class="character" id="char-tech" style="left:200px;top:150px;" title="Ouvrier">
+              <div class="char-avatar">🦺<div class="char-status" style="background:var(--green)"></div><div class="alert-ring"></div></div>
+              <div class="char-label">OUV.</div>
+            </div>
+            <div class="character" id="char-obs" style="left:320px;top:80px;" title="Observateur">
+              <div class="char-avatar">🔭<div class="char-status"></div><div class="alert-ring"></div></div>
+              <div class="char-label">OBS.</div>
+            </div>
+
+            <!-- UWB range indicator -->
+            <div id="uwbRange" style="position:absolute;left:80px;top:120px;width:200px;height:120px;border:1.5px dashed rgba(232,98,10,0.0);border-radius:50%;transition:all .5s;pointer-events:none;"></div>
+
+            <!-- Status overlay -->
+            <div id="statusOverlay" style="position:absolute;bottom:10px;left:10px;right:10px;background:rgba(0,0,0,0.5);padding:10px 12px;border-radius:3px;display:flex;align-items:center;gap:10px;">
+              <div id="statusDot" style="width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;"></div>
+              <div id="statusText" style="font-family:'Barlow Condensed',sans-serif;font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;">SYSTÈME OPÉRATIONNEL — AUCUNE MENACE DÉTECTÉE</div>
+            </div>
+
+            <!-- Alert banner -->
+            <div id="alertBanner" style="position:absolute;top:10px;left:10px;right:10px;background:rgba(212,42,42,0.0);padding:0;border-radius:3px;transition:all .4s;overflow:hidden;max-height:0;">
+              <div style="padding:10px 12px;display:flex;align-items:center;gap:10px;">
+                <span style="font-size:18px;">🚨</span>
+                <div>
+                  <div id="alertTitle" style="font-family:'Barlow Condensed',sans-serif;font-size:14px;font-weight:700;color:white;letter-spacing:1px;"></div>
+                  <div id="alertDesc" style="font-size:11px;color:rgba(255,255,255,0.7);margin-top:2px;"></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Timeline -->
+        <div class="timeline" style="margin-top:16px;">
+          <div class="timeline-title">CHRONOLOGIE D'ALERTE</div>
+          <div id="timeline">
+            <div class="tl-item" id="tl-0"><div class="tl-time">T=0ms</div><div class="tl-dot" style="background:var(--blue)"></div><div class="tl-text">LiDAR + UWB détectent la situation dangereuse</div></div>
+            <div class="tl-item" id="tl-1"><div class="tl-time">T=100ms</div><div class="tl-dot" style="background:var(--orange)"></div><div class="tl-text">IA calcule la trajectoire — danger confirmé</div></div>
+            <div class="tl-item" id="tl-2"><div class="tl-time">T=200ms</div><div class="tl-dot" style="background:var(--yellow)"></div><div class="tl-text">Bracelet vibre + OLED + notification tablette</div></div>
+            <div class="tl-item" id="tl-3"><div class="tl-time">T=2sec</div><div class="tl-dot" style="background:var(--red)"></div><div class="tl-text">Alerte maximale — tous systèmes actifs</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="demo-sidebar">
+
+        <!-- Scénarios -->
+        <div class="demo-controls">
+          <div class="demo-controls-title">SCÉNARIOS</div>
+          <div class="scenario-btns">
+            <button class="scenario-btn" onclick="resetDemo()" id="btn-reset">
+              <div class="scenario-dot" style="background:var(--green)"></div>
+              ÉTAT NORMAL — Chantier sécurisé
+            </button>
+            <button class="scenario-btn" onclick="runScenario1()" id="btn-s1">
+              <div class="scenario-dot" style="background:var(--orange)"></div>
+              SCÉNARIO 1 — Ouvrier zone danger
+            </button>
+            <button class="scenario-btn" onclick="runScenario2()" id="btn-s2">
+              <div class="scenario-dot" style="background:var(--red)"></div>
+              SCÉNARIO 2 — Collision imminente
+            </button>
+            <button class="scenario-btn" onclick="runScenario3()" id="btn-s3">
+              <div class="scenario-dot" style="background:var(--cyan)"></div>
+              SCÉNARIO 3 — Ouvrier derrière engin
+            </button>
+          </div>
+        </div>
+
+        <!-- Phone -->
+        <div class="phone-mock">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="phone-time" id="phoneTime">22:47</div>
+            <div class="phone-date">Jeudi 19 Fév · Zone Chantier A1</div>
+            <div id="notifContainer"></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section id="features">
+  <div class="max">
+    <div class="section-label">Technologies</div>
+    <div class="section-title">5 capteurs, 1 système</div>
+    <div class="features-grid">
+      <div class="feat">
+        <div class="feat-icon">🔵</div>
+        <div class="feat-title">LiDAR 360°</div>
+        <div class="feat-text">Cartographie 3D en temps réel. Précision ±2 cm. Fonctionne dans l'obscurité totale — génère sa propre lumière laser. Portée 100 m. Ne traverse pas les obstacles.</div>
+        <div class="feat-tag">3 000 – 5 000 €/u</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">📡</div>
+        <div class="feat-title">Radar courte portée</div>
+        <div class="feat-text">Traverse pluie, brouillard, fumée. Portée 200 m. Mesure la vitesse par effet Doppler. Prend le relais du LiDAR automatiquement par mauvais temps.</div>
+        <div class="feat-tag">400 – 800 €/u</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🌡️</div>
+        <div class="feat-title">Caméra Infrarouge</div>
+        <div class="feat-text">Vision thermique nocturne. Détecte téléphone à la main et posture distraction. Aucun visage capté — formes géométriques anonymes uniquement. 100% RGPD.</div>
+        <div class="feat-tag">300 – 800 €/u</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">⌚</div>
+        <div class="feat-title">Bracelet UWB BRC-02</div>
+        <div class="feat-text">Le signal UWB traverse métal et béton. Localisation ±10 cm même derrière un camion. Vibration haptique, OLED directionnel, capteur cardiaque, LED couleur. 12h autonomie.</div>
+        <div class="feat-tag">150 – 300 €/u</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🤖</div>
+        <div class="feat-title">IA embarquée Jetson</div>
+        <div class="feat-text">NVIDIA Jetson Orin Nano. Fusion de tous les capteurs. Calcul trajectoires et Time To Collision en &lt;200ms. Traitement 100% local — aucun cloud, aucun réseau requis.</div>
+        <div class="feat-tag">Inclus boîtier</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">📊</div>
+        <div class="feat-title">Application tablette</div>
+        <div class="feat-text">Vue 3D temps réel de tous les engins et ouvriers. Alertes couleur (vert/orange/rouge). Rapport automatique fin de nuit envoyé <strong>uniquement au chef de chantier</strong>.</div>
+        <div class="feat-tag">Dev inclus</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RAPPORT INCIDENTS -->
+<section id="rapport" style="background:var(--bg);padding:80px 40px;">
+  <div class="max">
+    <div class="section-label">Rapport chef de chantier</div>
+    <div class="section-title">INCIDENTS DOCUMENTÉS — ENVOI AUTOMATIQUE</div>
+    <p class="section-desc" style="margin-bottom:32px;">Chaque fin de nuit, ce rapport est généré automatiquement et envoyé <strong>exclusivement au chef de chantier</strong>. Il inclut les photos horodatées de chaque incident détecté.</p>
+
+    <!-- Rapport header -->
+    <div style="background:var(--navy);border-radius:4px;padding:24px 32px;margin-bottom:32px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--cyan);letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">RAPPORT QUOTIDIEN — SAFEGUARD AI</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;color:white;letter-spacing:1px;">CHANTIER A1 — NUIT DU 19 AU 20 FÉVRIER 2026</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.45);margin-top:4px;">Destinataire : <span style="color:var(--cyan);font-weight:600;">CHEF DE CHANTIER UNIQUEMENT</span> · Généré à 06:12</div>
+      </div>
+      <div style="display:flex;gap:24px;text-align:center;">
+        <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--red);">3</div><div style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:1px;text-transform:uppercase;">Incidents</div></div>
+        <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--orange);">7</div><div style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:1px;text-transform:uppercase;">Alertes</div></div>
+        <div><div style="font-family:'Barlow Condensed',sans-serif;font-size:28px;font-weight:900;color:var(--green);">4</div><div style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:1px;text-transform:uppercase;">Ouvriers</div></div>
+      </div>
+    </div>
+
+    <!-- Incident photos grid -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px;">
+
+      <!-- Incident 1 -->
+      <div style="background:white;border:1px solid var(--border);border-radius:4px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+        <div style="background:linear-gradient(135deg,#1a2a3a,#1e3050);height:200px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+          <!-- Simulated thermal camera view -->
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 60% 50%,rgba(232,98,10,0.6) 0%,rgba(26,79,196,0.3) 40%,rgba(10,22,40,0.9) 80%);"></div>
+          <div style="position:absolute;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(0,200,232,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,232,0.04) 1px,transparent 1px);background-size:20px 20px;"></div>
+          <!-- Figures -->
+          <div style="position:absolute;left:55%;top:40%;transform:translate(-50%,-50%);width:36px;height:60px;background:radial-gradient(rgba(232,98,10,0.9),rgba(212,42,42,0.4));border-radius:50% 50% 30% 30%;box-shadow:0 0 20px rgba(232,98,10,0.6);"></div>
+          <div style="position:absolute;left:35%;top:52%;transform:translate(-50%,-50%);width:70px;height:38px;background:radial-gradient(rgba(245,184,0,0.7),rgba(232,98,10,0.3));border-radius:6px;box-shadow:0 0 16px rgba(245,184,0,0.5);"></div>
+          <!-- Labels overlay -->
+          <div style="position:absolute;top:10px;left:12px;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--cyan);letter-spacing:2px;opacity:0.8;">CAMÉRA INFRAROUGE</div>
+          <div style="position:absolute;top:10px;right:12px;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--red);letter-spacing:1px;font-weight:700;">⬤ REC</div>
+          <div style="position:absolute;bottom:10px;left:12px;font-size:9px;color:rgba(255,255,255,0.5);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;">ZONE TRAVAUX — A1 — PELLETEUSE #2</div>
+          <!-- Distance indicator -->
+          <div style="position:absolute;left:37%;top:44%;border:1px dashed rgba(212,42,42,0.7);width:90px;height:40px;border-radius:50%;"></div>
+          <div style="position:absolute;left:52%;top:30%;font-size:9px;color:var(--red);font-family:'Barlow Condensed',sans-serif;font-weight:700;">1.1m ⚠️</div>
+        </div>
+        <div style="padding:16px 20px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--navy);">INCIDENT #1 — COLLISION ÉVITÉE</div>
+              <div style="font-size:11px;color:var(--mid);margin-top:2px;letter-spacing:0.5px;">📍 48°51'42"N 2°17'09"E · Pelleteuse #2</div>
+            </div>
+            <div style="background:rgba(212,42,42,0.1);color:var(--red);border:1px solid rgba(212,42,42,0.3);padding:3px 10px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;white-space:nowrap;">NIVEAU 2</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;"></div>
+            <div style="font-size:12px;color:var(--mid);">Ouvrier à <strong>1.1m</strong> de la pelleteuse en recul · Distance critique franchie</div>
+          </div>
+          <div style="background:var(--bg);border-radius:3px;padding:10px 12px;font-size:11px;color:var(--mid);line-height:1.6;">
+            <div style="display:flex;justify-content:space-between;"><span>⏱️ Heure</span><strong style="color:var(--navy);">02:17:43</strong></div>
+            <div style="display:flex;justify-content:space-between;margin-top:4px;"><span>🫀 FC ouvrier</span><strong style="color:var(--red);">112 bpm</strong></div>
+            <div style="display:flex;justify-content:space-between;margin-top:4px;"><span>⚡ Réponse système</span><strong style="color:var(--green);">127ms</strong></div>
+          </div>
+          <div class="badge-3d" onclick="openModal(1)">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            VISION 3D DISPONIBLE — VOIR LA RECONSTRUCTION
+          </div>
+        </div>
+      </div>
+
+      <!-- Incident 2 -->
+      <div style="background:white;border:1px solid var(--border);border-radius:4px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+        <div style="background:linear-gradient(135deg,#1a2a2a,#0e2020);height:200px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 40% 55%,rgba(232,98,10,0.5) 0%,rgba(26,79,100,0.3) 50%,rgba(10,22,40,0.9) 80%);"></div>
+          <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(0,200,232,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,232,0.04) 1px,transparent 1px);background-size:20px 20px;"></div>
+          <!-- LiDAR point cloud effect -->
+          <div style="position:absolute;inset:0;">
+            <div style="position:absolute;left:30%;top:35%;width:5px;height:5px;border-radius:50%;background:var(--cyan);opacity:0.6;box-shadow:0 0 8px var(--cyan);"></div>
+            <div style="position:absolute;left:45%;top:50%;width:4px;height:4px;border-radius:50%;background:var(--orange);opacity:0.7;box-shadow:0 0 8px var(--orange);"></div>
+            <div style="position:absolute;left:60%;top:42%;width:3px;height:3px;border-radius:50%;background:var(--cyan);opacity:0.5;"></div>
+            <div style="position:absolute;left:25%;top:60%;width:6px;height:6px;border-radius:50%;background:var(--orange);opacity:0.8;box-shadow:0 0 12px var(--orange);"></div>
+            <div style="position:absolute;left:70%;top:55%;width:4px;height:4px;border-radius:50%;background:var(--cyan);opacity:0.6;"></div>
+            <div style="position:absolute;left:38%;top:28%;width:3px;height:3px;border-radius:50%;background:var(--yellow);opacity:0.9;box-shadow:0 0 8px var(--yellow);"></div>
+          </div>
+          <!-- Figures -->
+          <div style="position:absolute;left:40%;top:50%;transform:translate(-50%,-50%);width:32px;height:54px;background:radial-gradient(rgba(232,98,10,0.85),rgba(212,42,42,0.3));border-radius:50% 50% 30% 30%;box-shadow:0 0 18px rgba(232,98,10,0.5);"></div>
+          <!-- UWB ring -->
+          <div style="position:absolute;left:40%;top:50%;transform:translate(-50%,-50%);width:80px;height:80px;border:1.5px dashed rgba(0,200,232,0.5);border-radius:50%;animation:none;"></div>
+          <div style="position:absolute;top:10px;left:12px;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--cyan);letter-spacing:2px;opacity:0.8;">LIDAR 360° + UWB</div>
+          <div style="position:absolute;top:10px;right:12px;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--orange);letter-spacing:1px;font-weight:700;">⬤ REC</div>
+          <div style="position:absolute;bottom:10px;left:12px;font-size:9px;color:rgba(255,255,255,0.5);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;">ZONE AVEUGLE — DERRIÈRE CAMION-BENNE</div>
+          <div style="position:absolute;left:42%;top:28%;font-size:9px;color:var(--orange);font-family:'Barlow Condensed',sans-serif;font-weight:700;">ZONE AVEUGLE</div>
+        </div>
+        <div style="padding:16px 20px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--navy);">INCIDENT #2 — OCCLUSION LiDAR</div>
+              <div style="font-size:11px;color:var(--mid);margin-top:2px;letter-spacing:0.5px;">📍 48°51'39"N 2°17'14"E · Camion-benne #1</div>
+            </div>
+            <div style="background:rgba(232,98,10,0.1);color:var(--orange);border:1px solid rgba(232,98,10,0.3);padding:3px 10px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;white-space:nowrap;">NIVEAU 1</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--orange);flex-shrink:0;"></div>
+            <div style="font-size:12px;color:var(--mid);">Ouvrier non visible LiDAR · UWB a pris le relais · Distance : <strong>2.1m</strong></div>
+          </div>
+          <div style="background:var(--bg);border-radius:3px;padding:10px 12px;font-size:11px;color:var(--mid);line-height:1.6;">
+            <div style="display:flex;justify-content:space-between;"><span>⏱️ Heure</span><strong style="color:var(--navy);">03:44:09</strong></div>
+            <div style="display:flex;justify-content:space-between;margin-top:4px;"><span>🫀 FC ouvrier</span><strong style="color:var(--orange);">98 bpm</strong></div>
+            <div style="display:flex;justify-content:space-between;margin-top:4px;"><span>⚡ Réponse système</span><strong style="color:var(--green);">89ms</strong></div>
+          </div>
+          <div class="badge-3d" onclick="openModal(2)">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            VISION 3D DISPONIBLE — VOIR LA RECONSTRUCTION
+          </div>
+        </div>
+      </div>
+
+      <!-- Incident 3 -->
+      <div style="background:white;border:1px solid var(--border);border-radius:4px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.06);">
+        <div style="background:linear-gradient(135deg,#1a1a2a,#0e1020);height:200px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 65% 45%,rgba(212,42,42,0.7) 0%,rgba(26,20,196,0.2) 50%,rgba(10,10,40,0.9) 80%);"></div>
+          <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(0,200,232,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,200,232,0.04) 1px,transparent 1px);background-size:20px 20px;"></div>
+          <!-- Two figures close -->
+          <div style="position:absolute;left:58%;top:42%;transform:translate(-50%,-50%);width:32px;height:56px;background:radial-gradient(rgba(212,42,42,1),rgba(232,98,10,0.5));border-radius:50% 50% 30% 30%;box-shadow:0 0 24px rgba(212,42,42,0.8);"></div>
+          <div style="position:absolute;left:68%;top:50%;transform:translate(-50%,-50%);width:22px;height:38px;background:radial-gradient(rgba(232,98,10,0.8),rgba(245,184,0,0.3));border-radius:50% 50% 30% 30%;box-shadow:0 0 14px rgba(232,98,10,0.5);"></div>
+          <!-- Radar sweep -->
+          <div style="position:absolute;left:58%;top:42%;transform:translate(-50%,-50%);width:100px;height:100px;border:1px solid rgba(212,42,42,0.4);border-radius:50%;"></div>
+          <div style="position:absolute;top:10px;left:12px;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--cyan);letter-spacing:2px;opacity:0.8;">RADAR DOPPLER</div>
+          <div style="position:absolute;top:10px;right:12px;font-family:'Barlow Condensed',sans-serif;font-size:10px;color:var(--red);letter-spacing:1px;font-weight:700;animation:none;">⬤ REC</div>
+          <div style="position:absolute;bottom:10px;left:12px;font-size:9px;color:rgba(255,255,255,0.5);font-family:'Barlow Condensed',sans-serif;letter-spacing:1px;">PLUIE INTENSE — BROUILLARD — SECTEUR B</div>
+          <div style="position:absolute;left:59%;top:22%;font-size:9px;color:var(--red);font-family:'Barlow Condensed',sans-serif;font-weight:700;">VITESSE : 4.7 km/h</div>
+          <!-- Rain effect -->
+          <div style="position:absolute;inset:0;background:repeating-linear-gradient(100deg,rgba(0,200,232,0.02) 0px,transparent 1px,transparent 8px,rgba(0,200,232,0.02) 9px);"></div>
+        </div>
+        <div style="padding:16px 20px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px;">
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:16px;font-weight:700;color:var(--navy);">INCIDENT #3 — VISIBILITÉ NULLE</div>
+              <div style="font-size:11px;color:var(--mid);margin-top:2px;letter-spacing:0.5px;">📍 48°51'35"N 2°17'22"E · Pluie intense</div>
+            </div>
+            <div style="background:rgba(212,42,42,0.1);color:var(--red);border:1px solid rgba(212,42,42,0.3);padding:3px 10px;font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;white-space:nowrap;">NIVEAU 2</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
+            <div style="width:6px;height:6px;border-radius:50%;background:var(--red);flex-shrink:0;"></div>
+            <div style="font-size:12px;color:var(--mid);">Pluie intense · LiDAR dégradé · Radar Doppler seul actif · Ouvrier à <strong>0.8m</strong></div>
+          </div>
+          <div style="background:var(--bg);border-radius:3px;padding:10px 12px;font-size:11px;color:var(--mid);line-height:1.6;">
+            <div style="display:flex;justify-content:space-between;"><span>⏱️ Heure</span><strong style="color:var(--navy);">05:02:31</strong></div>
+            <div style="display:flex;justify-content:space-between;margin-top:4px;"><span>🫀 FC ouvrier</span><strong style="color:var(--red);">124 bpm</strong></div>
+            <div style="display:flex;justify-content:space-between;margin-top:4px;"><span>⚡ Réponse système</span><strong style="color:var(--green);">143ms</strong></div>
+          </div>
+          <div class="badge-3d" onclick="openModal(3)">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            VISION 3D DISPONIBLE — VOIR LA RECONSTRUCTION
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Rapport footer / signature -->
+    <div style="margin-top:32px;background:white;border:1px solid var(--border);border-radius:4px;padding:20px 28px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;color:var(--navy);letter-spacing:1px;">RAPPORT GÉNÉRÉ PAR SAFEGUARD AI — BOÎTIER SGA-X1</div>
+        <div style="font-size:12px;color:var(--mid);margin-top:4px;">📧 Envoyé automatiquement à <strong><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="50333835367e3338313e2439352210353e24223520223923357e3622">[email&#160;protected]</a></strong> à 06:12 · Signature numérique certifiée</div>
+      </div>
+      <div style="display:flex;gap:12px;">
+        <div style="background:rgba(24,168,74,0.1);color:var(--green);border:1px solid rgba(24,168,74,0.3);padding:8px 18px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;border-radius:2px;">0 BLESSÉ</div>
+        <div style="background:rgba(26,79,196,0.08);color:var(--blue);border:1px solid rgba(26,79,196,0.2);padding:8px 18px;font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:700;border-radius:2px;">ARCHIVÉ</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QR CODE -->
+<section id="qr">
+  <div class="max">
+    <div class="section-label">Accès rapide</div>
+    <div class="section-title" style="color:white;">SCANNEZ POUR ACCÉDER À LA DÉMO</div>
+    <p class="section-desc">Montrez ce QR code au jury pour ouvrir la démonstration interactive directement sur leur téléphone.</p>
+    <div class="qr-box">
+      <canvas id="qrCanvas" width="180" height="180"></canvas>
+    </div>
+    <div class="qr-label">SAFEGUARD AI — DÉMO LIVE</div>
+    <div class="qr-url">safeguard-ai.fr/demo</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-brand">SAFE<span>GUARD</span> AI</div>
+  <div style="font-size:13px;color:rgba(255,255,255,0.4);">SGA-X1 · BRC-02 · Conforme RGPD · IP67 · Nuit & jour</div>
+  <div class="footer-right"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="aecdc1c0dacfcddaeeddcfc8cbc9dbcfdcca83cfc780c8dc">[email&#160;protected]</a></div>
+</footer>
+
+<!-- VIDEO MODAL 3D -->
+<div class="modal-overlay" id="modal3d">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div class="modal-title">🎥 Reconstitution 3D — Vision holographique IA</div>
+      <div class="modal-close" onclick="closeModal()">✕</div>
+    </div>
+    <div class="modal-video-wrap">
+      <video id="modal3dVideo" controls autoplay loop muted playsinline>
+        <source src="incident_3d.mp4" type="video/mp4">
+      </video>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-dot"></div>
+      <span>RECONSTRUCTION 3D TEMPS RÉEL · LIDAR + UWB · SAFEGUARD AI SGA-X1</span>
+    </div>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ═══ CLOCK ═══
+function updateClock() {
+  const now = new Date();
+  document.getElementById('phoneTime').textContent =
+    String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+}
+updateClock();
+setInterval(updateClock, 10000);
+
+// ═══ NOTIFICATIONS ═══
+let notifCount = 0;
+function addNotif(icon, title, body, type = 'ok-notif') {
+  const container = document.getElementById('notifContainer');
+  // Keep max 3
+  while (container.children.length >= 3) container.removeChild(container.firstChild);
+  const n = document.createElement('div');
+  n.className = `notif ${type}`;
+  const now = new Date();
+  const time = String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  n.innerHTML = `<div class="notif-icon">${icon}</div><div><div class="notif-app">SAFEGUARD AI</div><div class="notif-title">${title}</div><div class="notif-body">${body}</div><div class="notif-time">À l'instant · ${time}</div></div>`;
+  container.appendChild(n);
+  setTimeout(() => n.classList.add('show'), 50);
+}
+
+// ═══ STATUS UPDATE ═══
+function setStatus(text, color = 'var(--green)') {
+  document.getElementById('statusDot').style.background = color;
+  document.getElementById('statusText').textContent = text;
+}
+
+function setAlert(title, desc, show = true) {
+  const banner = document.getElementById('alertBanner');
+  document.getElementById('alertTitle').textContent = title;
+  document.getElementById('alertDesc').textContent = desc;
+  if (show) {
+    banner.style.background = 'rgba(212,42,42,0.85)';
+    banner.style.maxHeight = '80px';
+  } else {
+    banner.style.background = 'rgba(212,42,42,0)';
+    banner.style.maxHeight = '0';
+  }
+}
+
+function setCharCard(id, state) {
+  const card = document.getElementById('card-' + id);
+  card.className = 'char-card ' + state;
+}
+
+function setCharOnMap(id, state) {
+  const char = document.getElementById('char-' + id);
+  if (!char) return;
+  char.className = 'character ' + state;
+}
+
+function activateTimeline(steps) {
+  document.querySelectorAll('.tl-item').forEach(el => el.classList.remove('active'));
+  steps.forEach((i, idx) => {
+    setTimeout(() => {
+      document.getElementById('tl-' + i)?.classList.add('active');
+    }, idx * 300);
+  });
+}
+
+function clearAllStates() {
+  ['chef','tech','obs'].forEach(id => {
+    setCharOnMap(id, 'ok');
+  });
+  ['chef','tech','cond','obs'].forEach(id => setCharCard(id, 'ok'));
+  document.getElementById('uwbRange').style.borderColor = 'rgba(232,98,10,0)';
+  setAlert('','',false);
+  document.querySelectorAll('.scenario-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tl-item').forEach(el => el.classList.remove('active'));
+}
+
+// ═══ SCÉNARIOS ═══
+let currentTimer = null;
+
+function clearTimers() {
+  if (currentTimer) { clearTimeout(currentTimer); currentTimer = null; }
+}
+
+function resetDemo() {
+  clearTimers();
+  clearAllStates();
+  setStatus('SYSTÈME OPÉRATIONNEL — AUCUNE MENACE DÉTECTÉE', 'var(--green)');
+  document.getElementById('btn-reset').classList.add('active');
+  addNotif('✅', 'Système opérationnel', 'Tous les équipements connectés. 4 positions GPS actives.', 'ok-notif');
+}
+
+function runScenario1() {
+  clearTimers();
+  clearAllStates();
+  document.getElementById('btn-s1').classList.add('active');
+
+  setStatus('⚠️ ANALYSE EN COURS...', 'var(--orange)');
+  activateTimeline([0]);
+
+  setTimeout(() => {
+    activateTimeline([0,1]);
+    setStatus('⚠️ OUVRIER EN ZONE DANGER — T=100ms', 'var(--orange)');
+  }, 500);
+
+  setTimeout(() => {
+    activateTimeline([0,1,2]);
+    setCharOnMap('tech', 'warning');
+    setCharCard('tech', 'warn');
+    document.getElementById('uwbRange').style.borderColor = 'rgba(232,98,10,0.5)';
+    setStatus('⚠️ ALERTE NIVEAU 1 — BRACELET OUVRIER ACTIVÉ', 'var(--orange)');
+    addNotif('⚠️', 'Alerte Niveau 1 — Zone danger', 'Bracelet GPS [48°51\'42"N 2°17\'09"E] à 3.2m de la pelleteuse. Bracelet vibrant. Action requise.', 'warning-notif');
+    setCharCard('chef', 'warn');
+  }, 1200);
+
+  setTimeout(() => {
+    activateTimeline([0,1,2,3]);
+    setAlert('⚠️ ALERTE — OUVRIER EN ZONE DE DANGER', 'Distance: 3.2m · Pelleteuse en mouvement · T=200ms');
+    setStatus('⚠️ ALERTE ACTIVE — INTERVENTION CHEF DE CHANTIER', 'var(--orange)');
+  }, 2200);
+}
+
+function runScenario2() {
+  clearTimers();
+  clearAllStates();
+  document.getElementById('btn-s2').classList.add('active');
+
+  setStatus('🔴 DANGER CRITIQUE DÉTECTÉ — T=0ms', 'var(--red)');
+  activateTimeline([0]);
+
+  setTimeout(() => {
+    activateTimeline([0,1]);
+    setCharOnMap('tech', 'danger');
+    setCharCard('tech', 'alert');
+    setStatus('🔴 COLLISION IMMINENTE — T=100ms', 'var(--red)');
+  }, 400);
+
+  setTimeout(() => {
+    activateTimeline([0,1,2]);
+    document.getElementById('uwbRange').style.borderColor = 'rgba(212,42,42,0.6)';
+    setAlert('🚨 COLLISION IMMINENTE !', 'OUVRIER à 1.1m · Pelleteuse recule à 2.3km/h · Évacuation immédiate');
+    addNotif('🚨', 'COLLISION IMMINENTE', 'GPS [48°51\'42"N 2°17\'09"E] à 1.1m de la pelleteuse. Évacuation IMMÉDIATE requise !', 'danger-notif');
+    setCharCard('chef', 'alert');
+    setCharCard('cond', 'alert');
+    setStatus('🚨 ALERTE MAXIMALE — TOUS SYSTÈMES ACTIFS', 'var(--red)');
+  }, 900);
+
+  setTimeout(() => {
+    activateTimeline([0,1,2,3]);
+    addNotif('🚨', 'Alerte Niveau 2 activée', 'Chef de chantier notifié. Pelleteuse: arrêt d\'urgence requis. Bracelet: vibration max.', 'danger-notif');
+  }, 2100);
+}
+
+function runScenario3() {
+  clearTimers();
+  clearAllStates();
+  document.getElementById('btn-s3').classList.add('active');
+
+  setStatus('📡 UWB ACTIF — OUVRIER DERRIÈRE ENGIN DÉTECTÉ', 'var(--cyan)');
+  activateTimeline([0]);
+
+  setTimeout(() => {
+    document.getElementById('uwbRange').style.borderColor = 'rgba(0,200,232,0.4)';
+    setCharOnMap('tech', 'warning');
+    setCharCard('tech', 'warn');
+    activateTimeline([0,1]);
+    setStatus('📡 LiDAR : ZONE AVEUGLE — UWB PREND LE RELAIS', 'var(--cyan)');
+    addNotif('📡', 'UWB — Zone d\'occlusion', 'GPS [48°51\'39"N 2°17\'14"E] caché derrière l\'engin. LiDAR aveugle. Signal UWB actif. Distance: 2.1m.', 'warning-notif');
+  }, 600);
+
+  setTimeout(() => {
+    activateTimeline([0,1,2]);
+    setAlert('📡 OCCLUSION DÉTECTÉE — UWB ACTIF', 'Ouvrier derrière pelleteuse · LiDAR aveugle · Signal UWB traverse l\'obstacle · Distance: 2.1m');
+    setCharCard('cond', 'warn');
+    setStatus('⚠️ PROTECTION UWB ACTIVE — CONDUCTEUR ALERTÉ', 'var(--orange)');
+    addNotif('⚠️', 'Conducteur — Zone aveugle', 'Ouvrier non visible (LiDAR). Présence UWB confirmée à 2.1m. Ralentissez.', 'warning-notif');
+  }, 1800);
+}
+
+// Auto-start
+setTimeout(resetDemo, 800);
+
+// ═══ QR CODE (dessiné manuellement) ═══
+function drawQR() {
+  const canvas = document.getElementById('qrCanvas');
+  const ctx = canvas.getContext('2d');
+  const size = 180;
+  const cell = 6;
+  const cols = 30;
+
+  ctx.fillStyle = 'white';
+  ctx.fillRect(0,0,size,size);
+  ctx.fillStyle = 'black';
+
+  // Finder patterns (coins)
+  function finder(x, y) {
+    ctx.fillRect(x*cell, y*cell, 7*cell, 7*cell);
+    ctx.fillStyle = 'white';
+    ctx.fillRect((x+1)*cell, (y+1)*cell, 5*cell, 5*cell);
+    ctx.fillStyle = 'black';
+    ctx.fillRect((x+2)*cell, (y+2)*cell, 3*cell, 3*cell);
+  }
+  finder(0,0); finder(cols-7,0); finder(0,cols-7);
+
+  // Timing patterns
+  for(let i=8;i<cols-8;i++) {
+    if(i%2===0) { ctx.fillRect(i*cell,6*cell,cell,cell); ctx.fillRect(6*cell,i*cell,cell,cell); }
+  }
+
+  // Data modules (pseudo-random pattern)
+  const skip = new Set();
+  for(let r=0;r<8;r++) for(let c=0;c<8;c++) { skip.add(r+','+c); skip.add(r+','+(cols-1-c)); skip.add((cols-1-r)+','+c); }
+  for(let i=0;i<cols;i++) { skip.add('6,'+i); skip.add(i+',6'); }
+
+  // Seed-based fill for a realistic look
+  let seed = 42;
+  function rand() { seed = (seed * 1664525 + 1013904223) & 0xffffffff; return (seed >>> 0) / 0xffffffff; }
+
+  for(let r=0;r<cols;r++) for(let c=0;c<cols;c++) {
+    if(!skip.has(r+','+c) && rand() > 0.5) {
+      ctx.fillStyle = 'black';
+      ctx.fillRect(c*cell, r*cell, cell, cell);
+    }
+  }
+}
+drawQR();
+
+// ═══ MODAL 3D ═══
+function openModal(incidentNum) {
+  const modal = document.getElementById('modal3d');
+  const video = document.getElementById('modal3dVideo');
+  const title = modal.querySelector('.modal-title');
+  title.textContent = `🎥 Reconstruction 3D — Incident #${incidentNum}`;
+  modal.classList.add('open');
+  video.currentTime = 0;
+  video.play();
+}
+function closeModal() {
+  const modal = document.getElementById('modal3d');
+  const video = document.getElementById('modal3dVideo');
+  modal.classList.remove('open');
+  video.pause();
+}
+document.getElementById('modal3d').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+</script>
+</body>
+</html>
